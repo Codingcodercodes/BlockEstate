@@ -1,0 +1,23 @@
+import algosdk from 'algosdk';
+import dotenv from 'dotenv';
+
+// Load environment variables from .env file
+dotenv.config();
+
+// Fetching Algorand configurations from environment variables
+const ALGOD_TOKEN = process.env.ALGOD_TOKEN;
+const ALGOD_ADDRESS = process.env.ALGOD_ADDRESS;
+
+// Check if the environment variables are set
+if (!ALGOD_TOKEN || !ALGOD_ADDRESS) {
+  throw new Error('Algorand token or address is missing from environment variables.');
+}
+
+// Create and configure Algorand client
+const algodClient = new algosdk.Algodv2(ALGOD_TOKEN, ALGOD_ADDRESS, '');
+
+// Function to return Algorand client
+export function getAlgodClient(): algosdk.Algodv2 {
+  return algodClient;
+}
+

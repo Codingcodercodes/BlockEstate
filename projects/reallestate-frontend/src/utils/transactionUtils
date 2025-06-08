@@ -1,0 +1,150 @@
+import * as algosdk from 'algosdk';
+ import { getAlgodClient } from '../utils/blockchain_config';
+
+// Function to transfer an asset (e.g., land token)
+export async function transferAsset(
+  sender: string,
+  senderKey: string,
+  receiver: string,
+  assetID: number,
+  amount: number
+): Promise<string | null> {
+  try {
+    const algodClient = getAlgodClient();
+    const params = await algodClient.getTransactionParams().do();
+
+    const txn = algosdk.makeAssetTransferTxnWithSuggestedParams(
+      sender,
+      receiver,
+      undefined, // Amount
+      undefined, // Close to
+      amount,    // Asset amount to transfer
+      assetID,   // Asset ID
+      params
+    );
+
+    const signedTxn = txn.signTxn(senderKey);
+    const txId = await algodClient.sendRawTransaction(signedTxn).do();
+    console.log(`Transaction submitted: ${txId}`);
+    return txId;
+  } catch (err) {
+    console.error('Error transferring asset:', err);
+    return null;
+  }
+}
+
+// Function to create an asset (e.g., land verification asset)
+export async function createAsset(
+  sender: string,
+  senderKey: string,
+  assetName: string,
+  unitName: string,
+  total: number,
+  decimals: number,
+  assetURL: string
+): Promise<string | null> {
+  try {
+    const algodClient = getAlgodClient();
+    const params = await algodClient.getTransactionParams().do();
+
+    const txn = algosdk.makeAssetCreateTxnWithSuggestedParams(
+      sender,
+      params,
+      total,
+      decimals,
+      false, // Default frozen
+      undefined, // Manager address
+      undefined, // Reserve address
+      undefined, // Freeze address
+      undefined, // Clawback address
+      assetName,
+      unitName,
+      assetURL
+    );
+
+    const signedTxn = txn.signTxn(senderKey);
+    const txId = await algodClient.sendRawTransaction(signedTxn).do();
+    console.log(`Asset creation transaction submitted: ${txId}`);
+    return txId;
+  } catch (err) {
+    console.error('Error creating asset:', err);
+    return null;
+  }
+}
+
+// Function to wait for a transaction to be confirmed
+export async function waitForConfirmation(
+  txId: string,
+  maxRetries: number = 10,
+  delay: number = 2
+): Promise<algosdk.PendingTransactionResponse | null> {
+  try {
+    const algodClient = getAlgodClient();
+    let confirmedTxn = null;
+    for (let i = 0; i < maxRetries; i++) {
+      const pendingTxn = await algodClient.pendingTransactionInformation(txId).do();
+      if (pendingTxn['confirmed-round'] && pendingTxn['confirmed-round'] > 0) {
+        confirmedTxn = pendingTxn;
+        break;
+      }
+      console.log(`Waiting for confirmation... (Attempt ${i + 1}/${maxRetries})`);
+      await new Promise(resolve => setTimeout(resolve, delay * 1000));
+    }
+    if (confirmedTxn) {
+      console.log('Transaction confirmed:', confirmedTxn);
+      return confirmedTxn;
+    } else {
+      console.error('Transaction confirmation failed');
+      return null;
+    }
+  } catch (err) {
+    console.error('Error waiting for confirmation:', err);
+    return null;
+  }
+}
+
+// Function to opt-in to an asset (if the user doesn't already hold it)
+export async function optInToAsset(
+  sender: string,
+  senderKey: string,
+  assetID: number
+): Promise<string | null> {
+  try {
+    const algodClient = getAlgodClient();
+    const params = await algodClient.getTransactionParams().do();
+
+    const txn = algosdk.makeAssetTransferTxnWithSuggestedParams(
+      sender,
+      sender,
+      0, // No transfer of asset, just opt-in
+      undefined,
+      0, // No asset amount, just opt-in
+      assetID,
+      params
+    );
+
+    const signedTxn = txn.signTxn(senderKey);
+    const txId = await algodClient.sendRawTransaction(signedTxn).do();
+    console.log(`Opt-in transaction submitted: ${txId}`);
+    return txId;
+  } catch (err) {
+    console.error('Error opting in to asset:', err);
+    return null;
+  }
+}
+
+// Function to get the balance of a given asset for a specific address
+export async function getAssetBalance(
+  address: string,
+  assetID: number
+): Promise<number | null> {
+  try {
+    const algodClient = getAlgodClient();
+    const accountInfo = await algodClient.accountInformation(address).do();
+    const asset = accountInfo.assets.find((asset: any) => asset['asset-id'] === assetID);
+    return asset ? asset.amount : 0;
+  } catch (err) {
+    console.error('Error fetching asset balance:', err);
+    return null;
+  }
+}

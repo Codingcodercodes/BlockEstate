@@ -1,0 +1,10 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: 1.6.0
+_src_path: gh:algorandfoundation/algokit-python-template
+author_email: ramcharancholleti@gmail.com
+author_name: Ramcharan1706
+contract_name: realestate
+deployment_language: typescript
+preset_name: starter
+project_name: reallestate-contracts
+

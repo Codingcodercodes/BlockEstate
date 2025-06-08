@@ -1,0 +1,86 @@
+/* ConnectWalletModal.css */
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-container {
+  background: #ffffff;
+  border-radius: 8px;
+  width: 320px;
+  max-width: 90%;
+  padding: 20px;
+  color: #333;
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 20px;
+  font-weight: bold;
+  color: #0052cc;
+  margin-bottom: 16px;
+}
+
+.close-button {
+  font-size: 1.5em;
+  cursor: pointer;
+  color: #888;
+  transition: color 0.3s;
+}
+
+.close-button:hover {
+  color: #0052cc;
+}
+
+.wallet-option {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.3s, border-color 0.3s;
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+}
+
+.wallet-option.connected {
+  border: 1px solid #0052cc;
+  background-color: #e8f1ff;
+}
+
+.wallet-option:hover {
+  background-color: #f4f4f9;
+}
+
+.wallet-icon {
+  margin-left: auto;
+  width: 20px;
+  height: 20px;
+}
+
+.modal-footer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.modal-footer a {
+  color: #0052cc;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.modal-footer a:hover {
+  text-decoration: underline;
+}

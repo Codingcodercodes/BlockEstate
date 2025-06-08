@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "ES2020", // Modern JS target
+    "module": "ES2022", // ES modules
+    "moduleResolution": "node", // Resolve Node-style imports
+    "outDir": "dist", // Output directory
+    "sourceMap": true, // Enable source maps
+    "declaration": true, // Generate .d.ts files
+    "declarationMap": true, // Map for .d.ts files
+    "strict": true, // Strict typing
+    "noImplicitReturns": true, // Ensure all paths return
+    "noFallthroughCasesInSwitch": true, // Safer switch statements
+    "esModuleInterop": true, // Interop with CommonJS
+    "allowSyntheticDefaultImports": true, // Allow default import style
+    "resolveJsonModule": true, // Allow importing .json files
+    "skipLibCheck": true, // Don't check @types/.d.ts
+    "forceConsistentCasingInFileNames": true, // Enforce file naming consistency
+    "isolatedModules": true, // For ts-node & ESModules
+    "allowJs": false, // No JS files
+    "emitDecoratorMetadata": false, // Turn off unless you're using decorators
+    "experimentalDecorators": false, // Same here
+    "noEmit": false, // We want to emit compiled JS
+    "jsx": "react" // JSX support for React
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx", // Include TSX files as well for React
+    "src/pages/LoginPage.tsx" // Specific inclusion for LoginPage.tsx
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
