@@ -38,4 +38,3 @@ const port = 5000; // Change port to 3000 or any unused port
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
-
