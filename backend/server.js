@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-
+// we can't use fetch and get to get api calls I suppose?
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
