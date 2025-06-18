@@ -5,20 +5,45 @@ import Transact from './components/Transact';
 import AppCalls from './components/AppCalls';
 import LandManager from './components/LandManager';
 import PropertyList from './components/propertylist';
-import PropertyDetail from './components/propertydetail';
-import DigiLockerAuth from './components/DigiLockerAuth'; // Import DigiLockerAuth
+import DigiLockerAuth from './components/DigiLockerAuth';
+import { useLocation } from 'react-router-dom';
+import axios from 'axios';
+
+const DIGILOCKER_LOGIN_URL = process.env.REACT_APP_DIGILOCKER_LOGIN_URL || 'http://localhost:3000/digilocker/login';
+const DOCUMENTS_API_URL = process.env.REACT_APP_DOCUMENTS_API_URL || 'http://localhost:3000';
 
 const Home: React.FC = () => {
-  const { activeAddress } = useWallet();
+  const { activeAddress, disconnect } = useWallet();
+  const location = useLocation();
+
   const [modals, setModals] = useState({
     wallet: false,
     transact: false,
     appCalls: false,
-    digilocker: false,  // New modal for DigiLocker Auth
+    digilocker: false,
+    documentModal: false,
   });
 
   const [fadeIn, setFadeIn] = useState(false);
-  const [authHash, setAuthHash] = useState<string | null>(null);  // State for storing DigiLocker auth hash
+  const [authHash, setAuthHash] = useState<string | null>(null);
+  const [isRedirecting, setIsRedirecting] = useState(false);
+  const [documents, setDocuments] = useState<any[]>([]);
+  const [loadingDocs, setLoadingDocs] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const truncateAddress = (addr: string) =>
+    addr ? addr.slice(0, 6) + '...' + addr.slice(-4) : '';
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const hash = params.get('hash');
+    if (hash) {
+      setAuthHash(hash);
+      console.log('✅ DigiLocker Auth Success:', hash);
+      window.history.replaceState({}, document.title, location.pathname);
+    }
+  }, [location.search, location.pathname]);
 
   useEffect(() => {
     const timeout = setTimeout(() => setFadeIn(true), 100);
@@ -29,10 +54,72 @@ const Home: React.FC = () => {
     setModals((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const handleAuthSuccess = (hash: string) => {
-    setAuthHash(hash);
-    console.log("DigiLocker Auth Success:", hash);
-    // Handle any further actions with the hash (e.g., fetch data, update UI, etc.)
+  const launchDigiLocker = () => {
+    setIsRedirecting(true);
+    window.location.href = DIGILOCKER_LOGIN_URL;
+  };
+
+  const fetchDocuments = async () => {
+    setLoadingDocs(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${DOCUMENTS_API_URL}/documents`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response.data) {
+        setDocuments(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching documents:', error);
+    } finally {
+      setLoadingDocs(false);
+      toggleModal('documentModal');
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFile(e.target.files[0]);
+    }
+  };
+
+  const handleFileUpload = async () => {
+    if (!file) {
+      alert('Please select a file first.');
+      return;
+    }
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('You must be logged in to upload documents.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    setUploading(true);
+    try {
+      const response = await axios.post(`${DOCUMENTS_API_URL}/upload/gridfs`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log('✅ Upload response:', response.data);
+      alert('📤 Document uploaded successfully!');
+      fetchDocuments();
+    } catch (error: any) {
+      console.error('❌ Upload error:', error.response || error.message);
+      alert('❌ Error uploading document.');
+    } finally {
+      setUploading(false);
+      setFile(null);
+      const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+      if (input) input.value = '';
+    }
   };
 
   const baseButton: React.CSSProperties = {
@@ -94,117 +181,159 @@ const Home: React.FC = () => {
           width: '100%',
           textAlign: 'center',
           boxShadow: '0 25px 65px rgba(0, 0, 0, 0.1)',
-          animation: 'fadeIn 1s ease-in-out',
         }}
       >
         <h1
           style={{
-            fontSize: '2.8rem',
-            fontWeight: 800,
-            background: 'linear-gradient(to right, #ff7e5f, #feb47b)',
+            fontSize: '3rem',
+            fontWeight: 900,
+            background: 'linear-gradient(90deg, #ff6a00, #ee0979, #ff6a00)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
-            marginBottom: '1rem',
-            animation: 'slideIn 1s ease-out',
+            textShadow: `
+              1px 1px 2px rgba(0, 0, 0, 0.2),
+              0 4px 8px rgba(255, 106, 0, 0.5),
+              0 0 20px rgba(126, 117, 121, 0.3)
+            `,
+            letterSpacing: '1.5px',
+            lineHeight: '1.2',
+            marginBottom: '1.5rem',
+            textAlign: 'center',
+            fontFamily: `'Segoe UI', Tahoma, Geneva, Verdana, sans-serif`,
           }}
+
         >
-          🌍 Welcome To BlockEstate 
+           🌏 Welcome To BlockEstate
         </h1>
 
-        <p
-          style={{
-            color: '#4a5568',
-            fontSize: '1.1rem',
-            marginBottom: '2rem',
-            animation: 'fadeInText 1.5s ease-in-out',
-          }}
-        >
-          Secure, Smart, and Scalable Digital Land Ownership on Algorand.
+
+        <p style={{ color: '#4a5568', fontSize: '1.1rem', marginBottom: '2rem' }}>
+          🏨 Secure, Smart, and Scalable Digital Land on Algorand.
+          <br /> The Future Of Ownership 🚀
         </p>
 
-        {/* Wallet Button */}
         <button
           style={buttonGradient}
           onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
           onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')}
           onClick={() => toggleModal('wallet')}
         >
-          {activeAddress ? '🔄 Change Wallet' : '🔌 Connect Wallet'}
+          {activeAddress ? `🦊 Connected: ${truncateAddress(activeAddress)}` : '🔌 Connect Wallet'}
         </button>
 
         {activeAddress && (
           <div style={{ marginTop: '1.5rem' }}>
-            <button
-              style={buttonOutline}
-              onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#fffae6')}
-              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#fff')}
-              onClick={() => toggleModal('transact')}
-            >
-              💸 Transactions Demo
-            </button>
+
 
             <button
               style={buttonOutline}
-              onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#f0e6ff')}
-              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#fff')}
-              onClick={() => toggleModal('appCalls')}
+              onClick={launchDigiLocker}
+              disabled={isRedirecting}
             >
-              ⚙️ Contract Interactions
+              {isRedirecting ? 'Redirecting...' : '🔑 Login with DigiLocker'}
             </button>
 
-            {/* DigiLocker Auth Button */}
+            {/*
+            <div style={{ marginTop: '2rem' }}>
+              <input
+                type="file"
+                onChange={handleFileChange}
+                disabled={uploading}
+                style={{ marginBottom: '1rem' }}
+              />
+              <button
+                onClick={handleFileUpload}
+                style={buttonOutline}
+                disabled={uploading || !file}
+              >
+                {uploading ? 'Uploading...' : '📤 Upload Document'}
+              </button>
+            </div>
+            <button style={buttonOutline} onClick={fetchDocuments}>
+              📄 Fetch Documents
+            </button>*/}
+
             <button
-              style={buttonOutline}
-              onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#e0f7fa')}
-              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#fff')}
-              onClick={() => toggleModal('digilocker')}
+              style={{ ...buttonOutline, marginTop: '1rem' }}
+              onClick={() => {
+                disconnect();
+                setModals((prev) => ({ ...prev, wallet: false }));
+              }}
             >
-              🔑 Login with DigiLocker
+              🔒 Disconnect Wallet
             </button>
           </div>
         )}
 
-        {/* Property Section */}
+        {authHash && (
+          <div style={{ marginTop: '1rem', color: 'green', fontWeight: 600 }}>
+            ✅ DigiLocker Authenticated: {authHash}
+          </div>
+        )}
+
         <div style={sectionStyle}>
-          <h2
-            style={{
-              fontSize: '1.75rem',
-              fontWeight: 700,
-              color: '#ff7e5f',
-              marginBottom: '1rem',
-              animation: 'fadeInText 1.5s ease-in-out',
-            }}
-          >
+          <h2 style={{ fontSize: '1.75rem', fontWeight: 700, color: '#ff7e5f', marginBottom: '1rem' }}>
             🏡 Available Properties
           </h2>
           <PropertyList />
         </div>
 
-        {/* Land Manager Section */}
         <div style={{ ...sectionStyle, marginTop: '2rem' }}>
-          <h2
-            style={{
-              fontSize: '1.5rem',
-              fontWeight: 700,
-              color: '#20c997',
-              marginBottom: '1rem',
-            }}
-          >
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#20c997', marginBottom: '1rem' }}>
             🧭 Land Management Tools
           </h2>
           <LandManager />
         </div>
 
-        {/* Modals */}
         <ConnectWallet openModal={modals.wallet} closeModal={() => toggleModal('wallet')} />
-        <Transact openModal={modals.transact} setModalState={(v) => setModals({ ...modals, transact: v })} />
-        <AppCalls openModal={modals.appCalls} setModalState={(v) => setModals({ ...modals, appCalls: v })} />
+        <Transact
+          openModal={modals.transact}
+          setModalState={(v) => setModals((prev) => ({ ...prev, transact: v }))}
+        />
+        <AppCalls
+          openModal={modals.appCalls}
+          setModalState={(v) => setModals((prev) => ({ ...prev, appCalls: v }))}
+        />
+        <DigiLockerAuth
+          openModal={modals.digilocker}
+          onAuthSuccess={setAuthHash}
+          closeModal={() => toggleModal('digilocker')}
+        />
 
-        {/* DigiLocker Auth Modal */}
-        <DigiLockerAuth openModal={modals.digilocker} onAuthSuccess={handleAuthSuccess} closeModal={() => toggleModal('digilocker')} />
+        {/* Document Modal */}
+        {modals.documentModal && (
+          <div
+            style={{
+              backgroundColor: '#fff',
+              padding: '2rem',
+              borderRadius: '1rem',
+              boxShadow: '0 6px 24px rgba(0,0,0,0.1)',
+              marginTop: '2rem',
+            }}
+          >
+            <h2>Fetched Documents</h2>
+            {loadingDocs ? (
+              <p>Loading documents...</p>
+            ) : (
+              <ul>
+                {documents.map((doc: any) => (
+                  <li key={doc._id}>
+                    <a href={doc.link} target="_blank" rel="noopener noreferrer">
+                      {doc.title || doc.filename || 'Untitled'}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <button onClick={() => toggleModal('documentModal')} style={{ marginTop: '1rem' }}>
+              Close
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
 };
+
 
 export default Home;
