@@ -10,7 +10,7 @@ const DigiLockerAuth: React.FC<DigiLockerAuthProps> = ({ onAuthSuccess }) => {
     console.log('DigiLocker login button clicked');  // Debugging line
 
     // Send user to DigiLocker login page
-    window.location.href = "http://localhost:5000/digilocker/login";  // Now pointing to the working server
+    window.location.href = "http://localhost:3000/digilocker/login";  // Now pointing to the working server
 
     // Simulate a hash being returned from the backend (mock for demo purposes)
     const mockHash = "some-verification-hash";  // Replace this with real backend logic.
@@ -21,12 +21,6 @@ const DigiLockerAuth: React.FC<DigiLockerAuthProps> = ({ onAuthSuccess }) => {
       onAuthSuccess(mockHash);  // Trigger callback with mock hash
     }
   };
-
-  return (
-    <div>
-      <button onClick={handleLogin}>Login with DigiLocker</button>
-    </div>
-  );
 };
 
 export default DigiLockerAuth;
