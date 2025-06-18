@@ -1,54 +1,46 @@
-// src/components/PropertyList.tsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
-// Define the interface for a property
 interface Property {
   id: number;
   name: string;
-  // Add other fields if needed
+  // Add more fields as needed
 }
 
 const PropertyList: React.FC = () => {
-  // State to store the properties, loading state, and error state
   const [properties, setProperties] = useState<Property[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        // Fetch the data using axios, ensure the API endpoint is correct
-        const response = await axios.get('http://localhost:5000/properties');
-        setProperties(response.data); // Store the fetched data
-        setLoading(false); // Turn off the loading state once the data is fetched
+        const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/properties`);
+
+        // Ensure the data is an array, else default to empty array
+        const data = Array.isArray(response.data) ? response.data : [];
+
+        setProperties(data);
       } catch (err) {
-        console.error('Error fetching properties:', err); // Log any error that occurs
-        setError('Failed to load properties. Please try again later.'); // Show an error message
-        setLoading(false); // Turn off the loading state in case of error
+        console.error('Error fetching properties:', err);
+        setError('Failed to load properties. Please try again later.');
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchProperties(); // Call the function to fetch properties
-  }, []); // Empty dependency array ensures this effect runs only once
+    fetchProperties();
+  }, []);
 
-  // Handle loading state
-  if (loading) {
-    return <div>Loading properties...</div>;
-  }
+  if (loading) return <div>Loading properties...</div>;
+  if (error) return <div style={{ color: 'red' }}>{error}</div>;
 
-  // Handle error state
-  if (error) {
-    return <div>{error}</div>;
-  }
-
-  // Render the list of properties if data is fetched successfully
   return (
     <div>
       <h2>Available Properties</h2>
       {properties.length === 0 ? (
-        <p>No properties available.</p> // Handle the case when no properties are available
+        <p>No properties available.</p>
       ) : (
         <ul>
           {properties.map((property) => (
