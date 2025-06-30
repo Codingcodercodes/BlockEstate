@@ -1,3 +1,11 @@
+
+
+
+
+
+
+
+
 let accessToken = "";
 let selectedDocHash = "";
 
@@ -68,3 +76,13 @@ function transferOwnership() {
       alert("Ownership transfer failed.");
     });
 }
+
+
+
+
+
+
+
+
+
+
