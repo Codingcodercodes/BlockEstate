@@ -213,6 +213,11 @@ app.post('/api/transact', authenticate, async (req, res) => {
     return res.status(400).json({ message: 'Receiver and amount are required' });
   }
 
+
+
+
+
+  
   try {
     const senderAccount = algosdk.mnemonicToSecretKey(senderMnemonic);
     const suggestedParams = await algodClient.getTransactionParams().do();
