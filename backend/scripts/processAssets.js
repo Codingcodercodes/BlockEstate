@@ -1,3 +1,6 @@
+
+
+
 // scripts/processAssets.js
 import { getAccessToken } from "../services/auth.js";
 import { fetchUserDocuments } from "../services/api.js";
