@@ -59,6 +59,8 @@ const algodServer = (process.env.ALGOD_SERVER || '').trim();
 const algodPort = process.env.ALGOD_PORT ? Number(process.env.ALGOD_PORT) : null;
 const senderMnemonic = (process.env.SENDER_MNEMONIC || '').trim();
 
+
+
 let algodClient = null;
 if (!algodServer || !/^https?:\/\//.test(algodServer) || !senderMnemonic || !algodPort) {
   console.warn('⚠️ ALGO environment variables not fully configured. /api/transact will fail.');
@@ -70,7 +72,6 @@ if (!algodServer || !/^https?:\/\//.test(algodServer) || !senderMnemonic || !alg
     console.error('❌ Failed to initialize Algod client:', err.message);
   }
 }
-
 // --- DigiLocker Config ---
 const DIGILOCKER_CLIENT_ID = process.env.DIGILOCKER_CLIENT_ID || 'your-client-id';
 const DIGILOCKER_CLIENT_SECRET = process.env.DIGILOCKER_CLIENT_SECRET || 'your-client-secret';
