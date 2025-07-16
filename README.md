@@ -1,4 +1,4 @@
-# BlockEstate 🏡  
+# BlockEstate 
 A Decentralized Real Estate Registry System powered by Algorand
 
 BlockEstate is a blockchain-based solution designed to bring transparency, trust, and tamper-proof verification to the real estate ecosystem in India. Built on the Algorand blockchain using AlgoKit, this platform enables government officials and landowners to register, verify, and transfer property ownership seamlessly and securely.
@@ -15,7 +15,7 @@ BlockEstate is a blockchain-based solution designed to bring transparency, trust
 
 ---
 
-## 🧰 Tech Stack
+## Tech Stack
 
 - Algorand Blockchain  
 - PyTEAL Smart Contracts  
@@ -26,7 +26,7 @@ BlockEstate is a blockchain-based solution designed to bring transparency, trust
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
