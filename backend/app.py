@@ -1,4 +1,3 @@
-
 import os
 import logging
 import requests
@@ -8,25 +7,18 @@ from algosdk import transaction
 from algosdk.v2client import algod
 from dotenv import load_dotenv
 from requests.models import Response
-
-# Load environment variables from .env file
 load_dotenv()
-
-# Setup logging
 logging.basicConfig(level=logging.INFO)
-
-# Fetch environment variables and validate
 buyer_address = os.getenv("BUYER_ADDRESS")
 buyer_private_key = os.getenv("BUYER_PRIVATE_KEY")
 seller_address = os.getenv("SELLER_ADDRESS")
+seller_private_key = os.getenv("SELLER_PRIVATE_KEY")
 seller_private_key = os.getenv("SELLER_PRIVATE_KEY")
 land_token_id = os.getenv("LAND_TOKEN_ID")
 api_url = os.getenv("API_URL")
 token_url = os.getenv("TOKEN_URL")
 algod_token = os.getenv("ALGOD_TOKEN")
 algod_address = os.getenv("ALGOD_ADDRESS")
-
-# Validate essential environment variables
 required_vars = {
     "BUYER_ADDRESS": buyer_address,
     "BUYER_PRIVATE_KEY": buyer_private_key,
@@ -39,22 +31,14 @@ required_vars = {
     "ALGOD_ADDRESS": algod_address,
 }
 
-
-# Check if required variables are missing
 missing_vars = [key for key, value in required_vars.items() if value is None]
-
 if missing_vars:
     raise EnvironmentError(f"Missing required environment variables: {', '.join(missing_vars)}")
-
-# Ensure LAND_TOKEN_ID is a valid integer
 try:
     land_token_id = int(land_token_id)
 except ValueError:
     raise ValueError(f"Invalid value for LAND_TOKEN_ID: {land_token_id}. It must be an integer.")
-
-# Setup Algorand client
 algod_client = algod.AlgodClient(algod_token, algod_address)
-
 def get_access_token() -> Optional[str]:
     """Fetch access token using client credentials."""
     try:
