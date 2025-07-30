@@ -1,7 +1,3 @@
-
-
-
-// scripts/processAssets.js
 import { getAccessToken } from "../services/auth.js";
 import { fetchUserDocuments } from "../services/api.js";
 import { createAsset, optInAsset, transferAsset } from "../algorand/assetUtils.js";
