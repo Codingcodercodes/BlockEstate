@@ -1,10 +1,13 @@
-# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
-_commit: 1.6.0
-_src_path: gh:algorandfoundation/algokit-python-template
-author_email: ramcharancholleti@gmail.com
-author_name: Ramcharan1706
-contract_name: realestate
-deployment_language: typescript
-preset_name: starter
-project_name: reallestate-contracts
-
+function transferOwnership() {
+  fetch("/api/transfer-ownership", {
+    method: "POST"
+  })
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("status").textContent = "Ownership transferred successfully!";
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Ownership transfer failed.");
+    });
+}
