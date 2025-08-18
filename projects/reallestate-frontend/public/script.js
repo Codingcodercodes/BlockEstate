@@ -1,11 +1,3 @@
-
-
-
-
-
-
-
-
 let accessToken = "";
 let selectedDocHash = "";
 
