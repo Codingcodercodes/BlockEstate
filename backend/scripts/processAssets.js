@@ -4,7 +4,7 @@ import { createAsset, optInAsset, transferAsset } from "../algorand/assetUtils.j
 import dotenv from "dotenv";
 import algosdk from "algosdk";
 dotenv.config();
- 
+
 // Load environment variables
 const buyerAddr = process.env.BUYER_ADDRESS;
 const buyerKey = algosdk.mnemonicToSecretKey(process.env.BUYER_PRIVATE_KEY).sk;
