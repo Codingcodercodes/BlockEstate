@@ -154,6 +154,5 @@ def main():
             logging.info(f"Ownership transfer successful. Round: {transfer_txn.get('confirmed-round')}")
         else:
             logging.error("Ownership transfer failed.")
-
 if __name__ == "__main__":
     main()
