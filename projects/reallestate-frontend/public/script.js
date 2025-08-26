@@ -36,7 +36,6 @@ function fetchDocuments() {
       alert("Failed to fetch documents.");
     });
 }
-
 function createAsset() {
   fetch("/api/create-asset", {
     method: "POST",
