@@ -13,7 +13,6 @@ function getAccessToken() {
       alert("Failed to get access token.");
     });
 }
-
 function fetchDocuments() {
   fetch("/api/documents", {
     headers: {
