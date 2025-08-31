@@ -9,7 +9,7 @@ import { Config } from '@algorandfoundation/algokit-utils'
 
 Config.configure({
   logger: consoleLogger,
-  //  debug: true,
+  //  debug: true, 
   //  traceAll: true,
 })
 // registerDebugEventHandlers() // Uncomment to enable persisting artifacts required by AlgoKit AVM Debugger
