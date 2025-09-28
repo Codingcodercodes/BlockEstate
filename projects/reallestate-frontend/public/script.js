@@ -19,7 +19,6 @@ function fetchDocuments() {
       Authorization: `Bearer ${accessToken}`
     }
   })
-
     .then(res => res.json())
     .then(data => {
       const list = document.getElementById("document-list");
