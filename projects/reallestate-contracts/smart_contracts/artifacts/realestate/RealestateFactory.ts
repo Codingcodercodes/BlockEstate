@@ -16,6 +16,7 @@ export class RealestateFactory {
       onSchemaBreak: options.onSchemaBreak,
       onUpdate: options.onUpdate,
     })
+
     return { appClient, appId: deployResult.appId }
   }
 }
