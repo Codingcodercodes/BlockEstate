@@ -135,12 +135,10 @@ Use the generated clients in your React components for interacting with the bloc
 
 Algorand blockchain with AlgoKit, PyTeal, and AlgoPy
 
-Python with Poetry, Black, Ruff/Flake8, mypy, pytest, pip-audit
+Python with Poetry, pytest, pip-audit
 
 React + TypeScript frontend with Tailwind CSS, daisyUI, use-wallet
 
 Node.js backend API with Express and middleware
-
-Testing & linting: Jest, Playwright, ESLint, Prettier
 
 VS Code configured for productivity (.vscode included)
