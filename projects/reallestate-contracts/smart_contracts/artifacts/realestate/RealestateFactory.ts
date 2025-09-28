@@ -9,6 +9,7 @@ export class RealestateFactory {
     this.client = options.algorand
     this.sender = options.defaultSender
   }
+
   public async deploy(options: { onSchemaBreak: OnSchemaBreak; onUpdate: OnUpdate }) {
     const appClient = new RealestateClient()
     const deployResult = await appClient.deploy({
