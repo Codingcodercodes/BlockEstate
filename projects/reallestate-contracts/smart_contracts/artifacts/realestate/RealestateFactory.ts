@@ -1,6 +1,7 @@
 import { AlgorandClient } from '@algorandfoundation/algokit-utils'
 import { OnSchemaBreak, OnUpdate } from '@algorandfoundation/algokit-utils/types/app'
 import { RealestateClient } from './RealestateClient'
+
 export class RealestateFactory {
   private readonly client: AlgorandClient
   private readonly sender?: string
