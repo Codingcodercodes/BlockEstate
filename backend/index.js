@@ -65,11 +65,6 @@ app.post('/api/process-assets', async (req, res) => {
     res.status(500).json({ error: 'Asset processing failed' });
   }
 });
-
-
-
-
-
 app.get("/", (req, res) => {
   res.json({
     message: "BlockEstate API is sucessfullyy working"
