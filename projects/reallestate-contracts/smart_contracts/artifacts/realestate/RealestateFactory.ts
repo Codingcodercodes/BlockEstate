@@ -5,6 +5,7 @@ import { RealestateClient } from './RealestateClient'
 export class RealestateFactory {
   private readonly client: AlgorandClient
   private readonly sender?: string
+
   constructor(options: { algorand: AlgorandClient; defaultSender?: string }) {
     this.client = options.algorand
     this.sender = options.defaultSender
