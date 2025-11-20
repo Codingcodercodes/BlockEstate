@@ -7,7 +7,9 @@ from algosdk import transaction
 from algosdk.v2client import algod
 from dotenv import load_dotenv
 from requests.models import Response
+
 load_dotenv()
+
 logging.basicConfig(level=logging.INFO)
 buyer_address = os.getenv("BUYER_ADDRESS")
 buyer_private_key = os.getenv("BUYER_PRIVATE_KEY")
